@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jQuery String Length Calculator</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        #charCount { font-weight: bold; color: #007bff; }
+    </style>
+</head>
+<body>
+
+    <h2>Character Counter</h2>
+    <p>Type in the box below to see the character count update in real-time.</p>
+    
+    <input type="text" id="myInput" placeholder="Type something..." size="50">
+    
+    <p>Character Count: <span id="charCount">0</span></p>
+
+    <script>
+    $(document).ready(function(){
+        // Select the input field
+        const inputField = $('#myInput');
+        
+        // Select the span where we will display the count
+        const countDisplay = $('#charCount');
+
+        // Listen for the 'keyup' event on the input field
+        inputField.on('keyup', function() {
+            // 1. Get the current value (string) from the input field
+            let currentText = inputField.val();
+            
+            // 2. Calculate the length of that string using JavaScript's .length
+            let currentLength = currentText.length;
+            
+            // 3. Update the text of the span to show the new length
+            countDisplay.text(currentLength);
+        });
+    });
+    </script>
+
+</body>
+</html>
