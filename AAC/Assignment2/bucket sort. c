@@ -1,0 +1,108 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    float data;
+    struct Node* next;
+} Node;
+
+void insertionSortList(Node** head_ref) {
+    if (*head_ref == NULL || (*head_ref)->next == NULL) {
+        return;
+    }
+
+    Node* sorted = NULL;
+    Node* current = *head_ref;
+
+    while (current != NULL) {
+        Node* next = current->next;
+
+        if (sorted == NULL || sorted->data >= current->data) {
+            current->next = sorted;
+            sorted = current;
+        } else {
+            Node* temp = sorted;
+            while (temp->next != NULL && temp->next->data < current->data) {
+                temp = temp->next;
+            }
+            current->next = temp->next;
+            temp->next = current;
+        }
+        current = next;
+    }
+    *head_ref = sorted;
+}
+
+void bucketSort(float arr[], int n) {
+    if (n <= 0) return;
+
+    Node** buckets = (Node**)malloc(n * sizeof(Node*));
+    if (buckets == NULL) {
+        printf("Memory allocation failed.\n");
+        return;
+    }
+
+    for (int i = 0; i < n; i++) {
+        buckets[i] = NULL;
+    }
+
+    for (int i = 0; i < n; i++) {
+        int bucketIndex = n * arr[i];
+        Node* newNode = (Node*)malloc(sizeof(Node));
+        if (newNode == NULL) {
+             printf("Memory allocation for node failed.\n");
+             for(int j=0; j<n; ++j) {
+                Node *current = buckets[j];
+                while(current != NULL) {
+                    Node* temp = current;
+                    current = current->next;
+                    free(temp);
+                }
+             }
+             free(buckets);
+             return;
+        }
+        newNode->data = arr[i];
+        newNode->next = buckets[bucketIndex];
+        buckets[bucketIndex] = newNode;
+    }
+
+    for (int i = 0; i < n; i++) {
+        insertionSortList(&buckets[i]);
+    }
+
+    int index = 0;
+    for (int i = 0; i < n; i++) {
+        Node* current = buckets[i];
+        while (current != NULL) {
+            arr[index++] = current->data;
+            Node* temp = current;
+            current = current->next;
+            free(temp);
+        }
+    }
+    
+    free(buckets);
+}
+
+void printArray(float arr[], int size) {
+    for (int i = 0; i < size; i++) {
+        printf("%.4f ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    float arr[] = {0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434, 0.912, 0.455};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Original array: \n");
+    printArray(arr, n);
+
+    bucketSort(arr, n);
+
+    printf("\nSorted array: \n");
+    printArray(arr, n);
+
+    return 0;
+}
